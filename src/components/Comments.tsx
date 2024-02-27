@@ -21,7 +21,6 @@ export default function Comments({ id }: Props) {
   return (
     <div className="p-8 space-y-3">
       {commentsQuery.data.map((comm: CommentType) => {
-        console.log(comm)
         return <Comment key={comm.id} {...comm} />
       })}
     </div>
