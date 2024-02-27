@@ -1,6 +1,7 @@
 'use client'
 
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Post } from '@/components'
 
 const POSTS: any = [
   {
@@ -20,7 +21,8 @@ const NEW_POST = {
 }
 
 export default function Home() {
-  console.log(POSTS)
+  // console.log(POSTS)
+  const queryClient = useQueryClient()
   const postsQuery = useQuery({
     queryKey: ['posts'],
     // queryFn: () => Promise.reject('Error message'),
@@ -36,6 +38,7 @@ export default function Home() {
           id: crypto.randomUUID(),
         })
       ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
   })
 
   if (postsQuery.isLoading)
@@ -49,19 +52,18 @@ export default function Home() {
     )
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-8 p-24">
+    <main className="flex min-h-screen flex-col items-center justify-start gap-8 p-24">
       <h1 className="text-4xl">TanStack Query</h1>
       <div className="my-8 rounded-xl p-8 bg-gray-200 dark:bg-zinc-700 text-zinc-700 dark:text-gray-100">
-        <div className="space-y-4">
-          {postsQuery?.data?.map(post => (
-            <div key={post.id} className="p-4 capitalize">
-              <div className="text-2xl font-bold">{post.title}</div>
-              <div className="text-sm opacity-80">{post.body}</div>
-            </div>
-          ))}
-          <button onClick={() => newPostMutation.mutate(NEW_POST)}>
-            Add new
-          </button>
+        <button
+          className="py-3 px-8 border-2 border-amber-700 rounded-lg bg-amber-500 dark:bg-amber-600 disabled:opacity-80"
+          disabled={newPostMutation.isPending}
+          onClick={() => newPostMutation.mutate(NEW_POST)}
+        >
+          {newPostMutation.isPending ? 'Loading' : 'Add new'}
+        </button>
+        <div className="grid grid-cols-2 gap-4">
+          {postsQuery?.data?.map(post => <Post key={post.id} {...post} />)}
         </div>
       </div>
     </main>
