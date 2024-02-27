@@ -2,35 +2,25 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Post } from '@/components'
+import { POSTS, KEY_POSTS } from '@/constants'
+import { getPosts } from '@/utils'
+import { PostType } from '@/types'
 
-const POSTS: any = [
-  {
-    id: 10,
-    title: 'optio molestias id quia eum',
-    body: 'quo et expedita modi cum officia vel magni\ndoloribus qui repudiandae\nvero nisi sit\nquos veniam quod sed accusamus veritatis error',
-  },
-  {
-    id: 11,
-    title: 'et ea vero quia laudantium autem',
-    body: 'delectus reiciendis molestiae occaecati non minima eveniet qui voluptatibus\naccusamus in eum beatae sit\nvel qui neque voluptates ut commodi qui incidunt\nut animi commodi',
-  },
-]
 const NEW_POST = {
   title: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
   body: 'Nemo consequatur rem cum, tenetur blanditiis fugit commodi accusantium est aliquid iusto quaerat dolorum totam quos, velit eaque minima, quidem non aspernatur.',
 }
 
 export default function Home() {
-  // console.log(POSTS)
   const queryClient = useQueryClient()
   const postsQuery = useQuery({
-    queryKey: ['posts'],
+    queryKey: [KEY_POSTS],
     // queryFn: () => Promise.reject('Error message'),
-    queryFn: () => testWait().then(() => [...POSTS]),
+    queryFn: getPosts,
   })
 
   const newPostMutation = useMutation({
-    mutationKey: ['posts'],
+    mutationKey: [KEY_POSTS],
     mutationFn: (post: any) =>
       testWait().then(() =>
         POSTS.push({
@@ -38,7 +28,7 @@ export default function Home() {
           id: crypto.randomUUID(),
         })
       ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [KEY_POSTS] }),
   })
 
   if (postsQuery.isLoading)
@@ -62,8 +52,12 @@ export default function Home() {
         >
           {newPostMutation.isPending ? 'Loading' : 'Add new'}
         </button>
-        <div className="grid grid-cols-2 gap-4">
-          {postsQuery?.data?.map(post => <Post key={post.id} {...post} />)}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {postsQuery?.data
+            ?.reverse()
+            .map((post: PostType) => (
+              <Post key={post.id} isLink={true} {...post} />
+            ))}
         </div>
       </div>
     </main>
