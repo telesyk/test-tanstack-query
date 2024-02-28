@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { fakeCreatePost } from '@/utils'
+import { createPost } from '@/utils'
 import { useMutation } from '@tanstack/react-query'
 
 export default function CreatePost() {
@@ -12,7 +12,7 @@ export default function CreatePost() {
   const titleRef = useRef<HTMLInputElement>(null)
   const bodyRef = useRef<HTMLInputElement>(null)
   const createPostMutation = useMutation({
-    mutationFn: fakeCreatePost,
+    mutationFn: createPost,
   })
 
   const setValidation = (elements: any) => {

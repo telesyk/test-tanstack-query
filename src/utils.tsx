@@ -1,20 +1,30 @@
-import { API } from './constants'
-import { PostType } from './types'
+import { CommentType, PostType } from './types'
 
-function testWait() {
-  return new Promise(resolve => setTimeout(resolve, 1000))
+const lsDB = 'testPostsDB'
+
+export const getAll: any = async () => {
+  try {
+    const data = await import('./db.json')
+    if (!localStorage.getItem(lsDB)) {
+      localStorage.setItem(lsDB, JSON.stringify(data.default))
+    }
+    const lsData = localStorage.getItem(lsDB) || ''
+    return JSON.parse(lsData)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export const getPosts = async () => {
   try {
-    const { posts } = await import('./db.json')
+    const { posts } = await getAll()
     return posts
   } catch (error) {
     console.error(error)
   }
 }
 
-export const getPost = async (id: string | number) => {
+export const getPost = async (id: number) => {
   try {
     const posts = await getPosts()
     return posts?.find((post: PostType) => post.id === id)
@@ -23,28 +33,29 @@ export const getPost = async (id: string | number) => {
   }
 }
 
-export const getComments = async (postId: string | number) => {
+export const getComments = async (postId: number) => {
   try {
-    const res = await fetch(`${API.comments}?postId=${postId}`)
-    if (!res.ok) throw new Error(`Faild to get post ${postId} comments`)
-    return res.json()
+    const { comments } = await getAll()
+    return comments.filter((comm: CommentType) => comm.postId === postId)
   } catch (error) {
     console.error(error)
   }
 }
 
-export const fakeCreatePost = async ({ title, body }: PostType) => {
-  const posts = await getPosts()
+export const createPost = async ({ title, body }: PostType) => {
+  const data = await getAll()
   const newPost = {
     body,
     title,
     id: Date.now(),
     userId: 1,
   }
+  data.posts.push(newPost)
+  const updatedData = {
+    ...data,
+    posts: data.posts,
+  }
+  localStorage.setItem(lsDB, JSON.stringify(updatedData))
 
-  console.log(newPost)
-  return [...posts, newPost]
+  return data.posts
 }
-// testWait().then(() =>
-//   POSTS.find((post: { id: string | number }) => post.id === id)
-// )

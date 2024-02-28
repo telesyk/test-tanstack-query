@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Post } from '@/components'
 import { POSTS, KEY_POSTS } from '@/constants'
-import { getPosts } from '@/utils'
+import { getPosts, getAll } from '@/utils'
 import { PostType } from '@/types'
 
 const NEW_POST = {

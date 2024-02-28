@@ -10,7 +10,7 @@ type Props = {
 export default function Comments({ id }: Props) {
   const commentsQuery = useQuery({
     queryKey: ['comments', id],
-    queryFn: () => getComments(id),
+    queryFn: () => getComments(Number(id)),
   })
 
   if (commentsQuery.isLoading)
