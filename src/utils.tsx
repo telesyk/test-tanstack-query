@@ -1,4 +1,5 @@
-import { API, POSTS } from './constants'
+import { API } from './constants'
+import { PostType } from './types'
 
 function testWait() {
   return new Promise(resolve => setTimeout(resolve, 1000))
@@ -6,9 +7,8 @@ function testWait() {
 
 export const getPosts = async () => {
   try {
-    const res = await fetch(API.posts)
-    if (!res.ok) throw new Error('Faild to get data')
-    return res.json()
+    const { posts } = await import('./db.json')
+    return posts
   } catch (error) {
     console.error(error)
   }
@@ -16,9 +16,8 @@ export const getPosts = async () => {
 
 export const getPost = async (id: string | number) => {
   try {
-    const res = await fetch(`${API.posts}/${id}`)
-    if (!res.ok) throw new Error(`Faild to get post ${id} data`)
-    return res.json()
+    const posts = await getPosts()
+    return posts?.find((post: PostType) => post.id === id)
   } catch (error) {
     console.error(error)
   }
@@ -32,6 +31,19 @@ export const getComments = async (postId: string | number) => {
   } catch (error) {
     console.error(error)
   }
+}
+
+export const fakeCreatePost = async ({ title, body }: PostType) => {
+  const posts = await getPosts()
+  const newPost = {
+    body,
+    title,
+    id: Date.now(),
+    userId: 1,
+  }
+
+  console.log(newPost)
+  return [...posts, newPost]
 }
 // testWait().then(() =>
 //   POSTS.find((post: { id: string | number }) => post.id === id)

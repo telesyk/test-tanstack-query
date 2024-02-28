@@ -12,7 +12,7 @@ type Props = {
 export default function SinglePost({ params: { postId } }: { params: Props }) {
   const postQuery = useQuery({
     queryKey: [KEY_POSTS, postId],
-    queryFn: () => getPost(postId),
+    queryFn: () => getPost(Number(postId)),
   })
 
   if (postQuery.isLoading) return <div className="p-4 italic">Loading...</div>

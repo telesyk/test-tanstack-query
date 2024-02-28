@@ -10,7 +10,7 @@ export default function Navbar() {
   return (
     <nav className="p-16 flex justify-center gap-6">
       {path !== '/' && <Link href="/">Home</Link>}
-      <Link href="11">Single Post</Link>
+      <Link href="/create-post">Create Post</Link>
     </nav>
   )
 }

@@ -6,7 +6,7 @@ export default function Post({ title, body, id, isLink }: PostType) {
   return (
     <div className="p-4 capitalize space-y-3">
       <div className="text-xl font-bold">
-        {isLink ? <Link href={id.toString()}>{title}</Link> : title}
+        {isLink && id ? <Link href={id.toString()}>{title}</Link> : title}
       </div>
       <div className="text-xs opacity-80">{body}</div>
     </div>
