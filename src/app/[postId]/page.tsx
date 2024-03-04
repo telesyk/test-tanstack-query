@@ -3,7 +3,7 @@
 import { KEY_POSTS } from '@/constants'
 import { getPost } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
-import { Post, Comments } from '@/components'
+import { Post, Comments, PostUser } from '@/components'
 
 type Props = {
   postId: string
@@ -22,7 +22,7 @@ export default function SinglePost({ params: { postId } }: { params: Props }) {
   return (
     <div className="mx-auto max-w-2xl">
       <Post {...postQuery.data} />
-      <h3 className="font-bold text-sm">Comments:</h3>
+      <PostUser userId={postQuery.data.userId} />
       <Comments id={postId} />
     </div>
   )

@@ -9,8 +9,9 @@ export type CommentType = {
 export type PostType = {
   title?: string | undefined
   body?: string | undefined
-  id?: number
+  id: number
   userId?: number
   comments?: CommentType[]
   isLink?: boolean
+  className?: string
 }

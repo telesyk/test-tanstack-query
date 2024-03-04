@@ -13,6 +13,9 @@ export default function CreatePost() {
   const bodyRef = useRef<HTMLInputElement>(null)
   const createPostMutation = useMutation({
     mutationFn: createPost,
+    // onSuccess: (data) => {
+
+    // },
   })
 
   const setValidation = (elements: any) => {
@@ -50,6 +53,8 @@ export default function CreatePost() {
     createPostMutation.mutate({
       title: titleRef?.current?.value,
       body: bodyRef?.current?.value,
+      id: Date.now(),
+      userId: 1,
     })
   }
 
@@ -90,8 +95,11 @@ export default function CreatePost() {
             )}
           </div>
           <div className="flex-1">
-            <button className="rounded-lg py-3 px-6 border-2 transition-colors hover:bg-gray-100 hover:text-gray-900">
-              Post
+            <button
+              disabled={createPostMutation.isPending}
+              className="rounded-lg py-3 px-6 border-2 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            >
+              {createPostMutation.isPending ? 'Loading' : 'Post'}
             </button>
           </div>
         </div>

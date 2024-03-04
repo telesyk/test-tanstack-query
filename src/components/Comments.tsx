@@ -17,12 +17,17 @@ export default function Comments({ id }: Props) {
     return <div className="p-4 italic">Loading...</div>
   if (commentsQuery.isError)
     return <pre className="p-4 mono">{JSON.stringify(commentsQuery.error)}</pre>
+  if (commentsQuery.data.length === 0)
+    return <pre className="p-4 mono">No Comments</pre>
 
   return (
-    <div className="p-8 space-y-3">
-      {commentsQuery.data.map((comm: CommentType) => {
-        return <Comment key={comm.id} {...comm} />
-      })}
-    </div>
+    <>
+      <h3 className="font-bold text-sm">Comments:</h3>
+      <div className="p-8 space-y-3">
+        {commentsQuery.data.map((comm: CommentType) => {
+          return <Comment key={comm.id} {...comm} />
+        })}
+      </div>
+    </>
   )
 }

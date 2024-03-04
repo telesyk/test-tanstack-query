@@ -42,13 +42,19 @@ export const getComments = async (postId: number) => {
   }
 }
 
-export const createPost = async ({ title, body }: PostType) => {
+export const getUser = async (userId: number) => {
+  try {
+    const { users } = await getAll()
+    return users.filter((user: any) => user.id === userId)[0]
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const createPost = async (postProps: PostType) => {
   const data = await getAll()
   const newPost = {
-    body,
-    title,
-    id: Date.now(),
-    userId: 1,
+    ...postProps,
   }
   data.posts.push(newPost)
   const updatedData = {
