@@ -2,20 +2,26 @@
 
 import { useRef, useState } from 'react'
 import { createPost } from '@/utils'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { KEY_POSTS } from '@/constants'
+import { useRouter } from 'next/navigation'
 
 export default function CreatePost() {
   const [err, setError] = useState({
     title: '',
     body: '',
   })
+
+  const router = useRouter()
   const titleRef = useRef<HTMLInputElement>(null)
   const bodyRef = useRef<HTMLInputElement>(null)
+  const queryClient = useQueryClient()
   const createPostMutation = useMutation({
     mutationFn: createPost,
-    // onSuccess: (data) => {
-
-    // },
+    onSuccess: data => {
+      queryClient.setQueryData([KEY_POSTS, data.id], data)
+      queryClient.invalidateQueries({ queryKey: [KEY_POSTS] })
+    },
   })
 
   const setValidation = (elements: any) => {
@@ -56,15 +62,13 @@ export default function CreatePost() {
       id: Date.now(),
       userId: 1,
     })
+
+    router.push('/')
   }
 
   return (
     <div className="mx-auto max-w-2xl">
-      <form
-        action=""
-        onSubmit={handleSubmit}
-        className="rounded-lg p-4 bg-gray-800/80"
-      >
+      <form onSubmit={handleSubmit} className="rounded-lg p-4 bg-gray-800/80">
         <div className="flex flex-col gap-4">
           <div className="flex-1">
             <input
