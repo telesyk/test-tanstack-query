@@ -2,7 +2,7 @@ import { CommentType, PostType } from './types'
 
 const lsDB = 'testPostsDB'
 
-export const getAll: any = async () => {
+export async function getAll(): Promise<any> {
   try {
     const data = await import('./db.json')
     if (!localStorage.getItem(lsDB)) {
@@ -15,10 +15,10 @@ export const getAll: any = async () => {
   }
 }
 
-export const getPosts = async () => {
+export async function getPosts() {
   try {
     const { posts } = await getAll()
-    return posts
+    return posts as PostType[]
   } catch (error) {
     console.error(error)
   }
@@ -30,6 +30,19 @@ export const getPost = async (id: number) => {
     return posts?.find((post: PostType) => post.id === id)
   } catch (error) {
     console.error(error)
+  }
+}
+
+export const getInfinitPosts = async (param: number) => {
+  const LIMIT = 5
+  const pageStart = param - 1
+  const pageEnd = param * LIMIT
+  const allPosts = await getPosts()
+  const pageData = allPosts ? allPosts.slice(pageStart, pageEnd) : []
+
+  return {
+    nextPage: pageData.length < 5 ? undefined : param + 1,
+    posts: pageData,
   }
 }
 

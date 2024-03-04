@@ -7,7 +7,7 @@ import Link from 'next/link'
 import React from 'react'
 
 type Props = {
-  userId: number
+  userId: number | undefined
 }
 
 export default function PostUser({ userId }: Props) {
